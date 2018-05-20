@@ -91,6 +91,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_share"
         app:layout_anchor="@id/appBar"
-        app:layout_anchorGravity="bottom|end" />
+        app:layout_anchorGravity="bottom|end"
+        android:elevation="5dp"/>
 
 </android.support.design.widget.CoordinatorLayout>
