@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -66,6 +67,7 @@ public class ArticleDetailFragment extends Fragment implements
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
     private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
+    private ProgressBar mProgress;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -131,6 +133,9 @@ public class ArticleDetailFragment extends Fragment implements
                         .getIntent(), getString(R.string.action_share)));
             }
         });
+
+        mProgress = (ProgressBar) mRootView.findViewById(R.id.article_progress);
+        mProgress.setVisibility(View.VISIBLE);
 
         bindViews();
         return mRootView;
@@ -231,6 +236,9 @@ public class ArticleDetailFragment extends Fragment implements
             mCursor.close();
             mCursor = null;
         }
+        else {
+            hideProgress();
+        }
 
         bindViews();
     }
@@ -239,5 +247,9 @@ public class ArticleDetailFragment extends Fragment implements
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mCursor = null;
         bindViews();
+    }
+
+    private void hideProgress() {
+        mProgress.setVisibility(View.INVISIBLE);
     }
 }
