@@ -92,7 +92,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_share"
         app:layout_anchor="@id/appBar"
-        app:layout_anchorGravity="bottom|end"/>
+        app:layout_anchorGravity="bottom|end"
+        android:elevation="6dp"/>
 
     <ProgressBar
         android:layout_width="match_parent"
