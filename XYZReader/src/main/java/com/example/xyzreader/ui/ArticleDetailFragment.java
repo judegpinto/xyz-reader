@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -31,11 +32,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -189,22 +192,30 @@ public class ArticleDetailFragment extends Fragment implements
 
             }
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
-            ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
-                    .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
+            Picasso.with(getContext())
+                    .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                    .into(new Target() {
                         @Override
-                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                            Bitmap bitmap = imageContainer.getBitmap();
-                            if (bitmap != null) {
-                                Palette p = Palette.generate(bitmap, 12);
-                                mMutedColor = p.getDarkMutedColor(0xFF333333);
-                                mPhotoView.setImageBitmap(imageContainer.getBitmap());
-                                mRootView.findViewById(R.id.meta_bar)
-                                        .setBackgroundColor(mMutedColor);
-                            }
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            mPhotoView.setImageBitmap(bitmap);
+                            Palette.from(bitmap)
+                                    .generate(new Palette.PaletteAsyncListener() {
+                                        @Override
+                                        public void onGenerated(Palette palette) {
+                                            mMutedColor = palette.getDarkMutedColor(0xFF333333);
+                                            mRootView.findViewById(R.id.meta_bar)
+                                                    .setBackgroundColor(mMutedColor);
+                                        }
+                                    });
                         }
 
                         @Override
-                        public void onErrorResponse(VolleyError volleyError) {
+                        public void onBitmapFailed(Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
                         }
                     });
@@ -252,4 +263,5 @@ public class ArticleDetailFragment extends Fragment implements
     private void hideProgress() {
         mProgress.setVisibility(View.INVISIBLE);
     }
+
 }
